@@ -1,0 +1,26 @@
+{
+  "name": "taskjs-data-server",
+  "version": "1.0.0",
+  "description": "Real-time data server for voltage and demand monitoring",
+  "main": "data-server.js",
+  "scripts": {
+    "start": "node data-server.js",
+    "dev": "nodemon data-server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "real-time",
+    "api",
+    "data"
+  ],
+  "author": "",
+  "license": "ISC"
+}

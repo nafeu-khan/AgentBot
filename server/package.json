@@ -1,0 +1,33 @@
+{
+	"name": "server",
+	"version": "1.0.0",
+	"description": "llm chatbot sincos",
+	"license": "ISC",
+	"author": "nafeu",
+	"type": "commonjs",
+	"main": "server.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "nodemon server.js "
+	},
+	"dependencies": {
+		"@langchain/community": "^0.0.20",
+		"@langchain/core": "^0.3.72",
+		"@langchain/langgraph": "^0.0.26",
+		"@langchain/ollama": "^0.2.3",
+		"axios": "^1.11.0",
+		"cors": "^2.8.5",
+		"dotenv": "^16.3.1",
+		"express": "^4.21.2",
+		"helmet": "^7.1.0",
+		"langchain": "^0.1.25",
+		"morgan": "^1.10.1",
+		"node-cache": "^5.1.2",
+		"ollama": "^0.5.17",
+		"zod": "^3.25.76"
+	},
+	"devDependencies": {
+		"jest": "^29.7.0",
+		"nodemon": "^3.1.10"
+	}
+}
