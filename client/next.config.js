@@ -7,7 +7,7 @@ const nextConfig = {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000',
   },
   // Enable development features
-  async rewrites() {
+  async rewrites() { 
     return [
       {
         source: '/api/:path*',

@@ -1,23 +1,58 @@
 "use client";
 
-import { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
-import ChatBox from "../components/ChatBox";
-import StatusPanel from "../components/StatusPanel";
-import ObservabilityPanel from "../components/ObservabilityPanel";
-import AuthModal from "../components/AuthModal";
-import UserProfile from "../components/UserProfile";
-import AdminPanel from "../components/AdminPanel";
-import Header from "../components/Header";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../../contexts/AuthContext";
+import ChatBox from "../../../components/ChatBox";
+import Header from "../../../components/Header";
+import StatusPanel from "../../../components/StatusPanel";
+import ObservabilityPanel from "../../../components/ObservabilityPanel";
+import AuthModal from "../../../components/AuthModal";
+import UserProfile from "../../../components/UserProfile";
+import AdminPanel from "../../../components/AdminPanel";
 
-export default function Home() {
+interface ConversationPageProps {
+	params: {
+		id: string;
+	};
+}
+
+export default function ConversationPage({ params }: ConversationPageProps) {
+	const router = useRouter();
+	const { user, isLoading, isAuthenticated } = useAuth();
+	const conversationId = params.id;
+
+	// UI state
 	const [showStatus, setShowStatus] = useState(false);
 	const [showObservability, setShowObservability] = useState(false);
 	const [showAuthModal, setShowAuthModal] = useState(false);
 	const [showUserProfile, setShowUserProfile] = useState(false);
 	const [showAdminPanel, setShowAdminPanel] = useState(false);
 
-	const { user, isAuthenticated, isLoading } = useAuth();
+	// Redirect to login if not authenticated
+	useEffect(() => {
+		if (!isLoading && !isAuthenticated) {
+			router.push("/");
+		}
+	}, [isAuthenticated, isLoading, router]);
+
+	// Show loading while checking authentication
+	if (isLoading) {
+		return (
+			<div className="min-h-screen bg-gray-50 flex items-center justify-center">
+				<div className="flex items-center space-x-2">
+					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+					<span className="text-gray-600">
+						Loading...
+					</span>
+				</div>
+			</div>
+		);
+	}
+
+	if (!isAuthenticated || !user) {
+		return null;
+	}
 
 	return (
 		<div className="h-screen flex flex-col">
@@ -36,10 +71,12 @@ export default function Home() {
 			/>
 
 			{/* Main content */}
-			<div className="flex-1 flex overflow-hidden">
+			<div className="flex-1 flex overflow-hidden bg-gray-50">
 				{/* Chat area */}
 				<div className="flex-1 flex flex-col">
-					<ChatBox />
+					<ChatBox
+						conversationId={conversationId}
+					/>
 				</div>
 
 				{/* Status panel */}
@@ -91,51 +128,6 @@ export default function Home() {
 				isOpen={showAdminPanel}
 				onClose={() => setShowAdminPanel(false)}
 			/>
-
-			{/* Footer */}
-			<footer className="bg-white border-t border-gray-200 px-4 py-3">
-				<div className="max-w-7xl mx-auto sm:flex justify-between items-center text-sm text-gray-500">
-					<div className="flex items-center space-x-4 sm:space-x-6">
-						{/* <span className="md:block">
-							Built with LangChain +
-							LangGraph + Ollama
-						</span>
-						<span className="md:block">
-							•
-						</span>
-						<span className="md:block">
-							Monitored with LangSmith
-						</span>
-						<span className="md:block">
-							•
-						</span>
-						<span className="md:block">
-							Data updates every 5
-							seconds
-						</span> */}
-					</div>
-					<div className="flex items-center space-x-4">
-						{isAuthenticated && (
-							<div className="flex items-center space-x-2">
-								<div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-								<span className="md:block">
-									Signed
-									in as{" "}
-									{
-										user?.username
-									}
-								</span>
-							</div>
-						)}
-						<div className="flex items-center space-x-2">
-							<div className="w-2 h-2 bg-green-400 rounded-full"></div>
-							<span className="md:block">
-								Connected
-							</span>
-						</div>
-					</div>
-				</div>
-			</footer>
 		</div>
 	);
 }

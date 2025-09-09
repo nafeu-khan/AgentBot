@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface Message {
         id: string;
         role: "user" | "assistant";
@@ -44,4 +46,28 @@ export interface DashboardData {
         dashboardUrl?: string;
         project?: string;
         message?: string;
+}
+import { authService, type User } from "../services";
+export interface AuthContextType {
+        user: User | null;
+        isLoading: boolean;
+        isAuthenticated: boolean;
+        login: (
+                identifier: string,
+                password: string
+        ) => Promise<{ success: boolean; error?: string }>;
+        register: (
+                username: string,
+                email: string,
+                password: string
+        ) => Promise<{ success: boolean; error?: string }>;
+        logout: () => Promise<void>;
+        refreshToken: () => Promise<boolean>;
+        updateProfile: (
+                updates: Partial<User>
+        ) => Promise<{ success: boolean; error?: string }>;
+}
+
+export interface AuthProviderProps {
+	children: ReactNode;
 }

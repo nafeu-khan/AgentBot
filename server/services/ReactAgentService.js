@@ -64,16 +64,8 @@ class MemoryLangChainService {
 		});
 	}
 
-	async streamQuery(
-		userMessage,
-		sessionId = "default-session",
-		onToken = () => {}
-	) {
-		console.log(
-			"Streaming query with LangChain:",
-			userMessage,
-			this.llm.model
-		);
+	async streamQuery(userMessage, sessionId = "default-session", onToken = () => {}) {
+		console.log("Streaming query with LangChain:", userMessage, this.llm.model);
 		try {
 			const history = await memory.getHistory(sessionId);
 			const systemMessage =
@@ -130,24 +122,20 @@ class MemoryLangChainService {
 			const initialResponse = await this.llmWithTools.invoke(messages);
 
 			// Helper to stream text in chunks (emulates token streaming)
-			const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-			const streamText = async (text) => {
-				if (!text) return;
-				const chunkSize = 32;
-				for (let i = 0; i < text.length; i += chunkSize) {
-					const chunk = text.slice(i, i + chunkSize);
-					try {
-						onToken(chunk);
-					} catch (e) {}
-					await sleep(8);
-				}
-			};
+			// const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+			// const streamText = async (text) => {
+			// 	if (!text) return;
+			// 	const chunkSize = 32;
+			// 	for (let i = 0; i < text.length; i += chunkSize) {
+			// 		const chunk = text.slice(i, i + chunkSize);
+			// 		try {
+			// 			onToken(chunk);
+			// 		} catch (e) {}
+			// 		await sleep(8);
+			// 	}
+			// };
 
-			console.log("Initial response:", {
-				content: initialResponse.content,
-				tool_calls: initialResponse.tool_calls,
-				additional_kwargs: initialResponse.additional_kwargs,
-			});
+			console.log("Initial response:", {content: initialResponse.content,tool_calls: initialResponse.tool_calls,additional_kwargs: initialResponse.additional_kwargs,});
 
 			// If tools were called, execute them, update memory, and get final response
 			if (
@@ -194,8 +182,7 @@ class MemoryLangChainService {
 				}
 
 				const updatedHistory = await memory.getHistory(sessionId);
-				const updatedLangchainHistory =
-					this.convertToLangChainMessages(updatedHistory);
+				const updatedLangchainHistory = this.convertToLangChainMessages(updatedHistory);
 				const finalResponseStream = await this.llm.stream([
 					systemMessage,
 					...updatedLangchainHistory,
@@ -233,7 +220,8 @@ class MemoryLangChainService {
 						content += chunkContent;
 						try {
 							onToken(chunkContent);
-						} catch (e) {}
+						} catch (e) {
+						}
 					}
 				}
 
