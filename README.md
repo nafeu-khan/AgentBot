@@ -39,7 +39,7 @@ taskjs/
 ##  Prerequisites
 
 - Node.js 18+ and npm
-- Python 3.8+ (for Python backend)
+- Python 3.10+ (for Python backend as chromadb is used by pip)
 - Ollama installed and running
 - OpenWeather API key (optional, for weather features)
 
@@ -178,14 +178,7 @@ AI: [Calls getCompanyInfo tool and provides company details]
 
 3. **Tool Calling Issues**
    - Ensure the model supports tool calling
-   - Check that all required environment variables are set
+   - Check that all required environment variables are set( see env.example)
 
 4. **Streaming Not Working**
-   - Verify the chat controller streaming implementation
    - Check browser network tab for SSE connections
-
-### Debug Mode
-Enable debug logging by setting:
-```bash
-NODE_ENV=development
-```
