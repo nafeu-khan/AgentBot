@@ -23,7 +23,6 @@ class AuthMiddleware {
 				});
 			}
 
-			// Check if token is blacklisted
 			const isBlacklisted = await this.isTokenBlacklisted(token);
 			if (isBlacklisted) {
 				return res.status(401).json({
@@ -33,10 +32,8 @@ class AuthMiddleware {
 				});
 			}
 
-			// Verify token
 			const decoded = jwtService.verifyAccessToken(token);
 
-			// Get user from database
 			const user = await User.findById(decoded.userId);
 			if (!user) {
 				return res.status(401).json({
@@ -46,7 +43,6 @@ class AuthMiddleware {
 				});
 			}
 
-			// Verify session is still active
 			if (decoded.sessionId) {
 				const session = await User.findSessionById(decoded.sessionId);
 				if (!session) {
@@ -56,13 +52,10 @@ class AuthMiddleware {
 						code: "SESSION_EXPIRED",
 					});
 				}
-
-				// Update session activity
 				await User.updateSessionActivity(decoded.sessionId);
 				req.session = session;
 			}
 
-			// Add user and token info to request
 			req.user = User.sanitizeUser(user);
 			req.token = {
 				raw: token,
@@ -113,10 +106,8 @@ class AuthMiddleware {
 				}
 			}
 		} catch (error) {
-			// Silent fail for optional auth
 			console.warn("Optional auth warning:", error.message);
 		}
-
 		next();
 	}
 
@@ -159,7 +150,6 @@ class AuthMiddleware {
 				const attempts = (await redisCacheService.get(key)) || 0;
 
 				if (attempts >= maxAttempts) {
-					// Calculate remaining time since Redis doesn't have getTTL method
 					const remainingTime = Math.floor(windowMs / 1000);
 					return res.status(429).json({
 						success: false,
@@ -169,7 +159,6 @@ class AuthMiddleware {
 					});
 				}
 
-				// Increment attempts using the correct method name
 				await redisCacheService.set(
 					key,
 					attempts + 1,
@@ -179,11 +168,10 @@ class AuthMiddleware {
 				next();
 			} catch (error) {
 				console.error("Rate limiting error:", error);
-				next(); // Continue on rate limit error
+				next(); 
 			}
 		};
 	}
-
 
 	async verifySessionOwnership(req, res, next) {
 		try {
@@ -198,7 +186,6 @@ class AuthMiddleware {
 				});
 			}
 
-			// Check if session belongs to user
 			const session = await User.findSessionById(sessionId);
 			if (!session || session.user_id !== userId) {
 				return res.status(403).json({
@@ -306,7 +293,6 @@ class AuthMiddleware {
 
 	async clearAllRateLimits() {
 		try {
-			// This is a simplified approach - in production you'd want to scan for keys
 			const keys =
 				(await redisCacheService.client?.keys(
 					`${this.rateLimitPrefix}*`

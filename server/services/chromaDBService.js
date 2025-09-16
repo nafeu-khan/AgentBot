@@ -23,9 +23,9 @@ class ChromaDBService {
 
 			if (response.data && response.data.status === "healthy") {
 				this.isInitialized = true;
-				console.log("✅ ChromaDB server connected successfully");
+				console.log("ChromaDB server connected successfully");
 				console.log(
-					`📊 Documents in collection: ${response.data.document_count}`
+					` Documents in collection: ${response.data.document_count}`
 				);
 				return true;
 			} else {
@@ -36,14 +36,9 @@ class ChromaDBService {
 				"  ChromaDB server not available, running in degraded mode:",
 				error.message
 			);
-			console.info(" To enable ChromaDB vector storage:");
-			console.info(
-				"1. Start the Python ChromaDB server: cd chroma-server && ./start.sh"
-			);
-			console.info(
-				"2. Or run: cd chroma-server && python chroma_server.py"
-			);
-			console.info(
+			console.info(" To enable ChromaDB vector storage:",
+				"1. Start the Python ChromaDB server: cd chroma-server && ./start.sh",
+				"2. Or run: cd chroma-server && python chroma_server.py",
 				"3. Server will continue without vector search capabilities"
 			);
 			this.isInitialized = false;
@@ -65,7 +60,6 @@ class ChromaDBService {
 				console.log("ChromaDB not available, trying to initialize");
 				this.ensureInitialized();
 			}
-
 			// Validate inputs before sending
 			if (!sessionId || typeof sessionId !== "string") {
 				throw new Error(`Invalid sessionId: ${sessionId}`);

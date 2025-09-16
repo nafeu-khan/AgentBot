@@ -157,24 +157,19 @@ setInterval(updateData, interval);
 
 app.get("/api/data/", (req, res) => {
 	res.json({
-		// Primary metrics
 		voltage: `${currentData.voltage} V`,
 		demand: `${currentData.demand} MW`,
 		frequency: `${currentData.frequency} Hz`,
 
-		// Environmental conditions
 		temperature: `${currentData.temperature} °C`,
 		humidity: `${currentData.humidity}%`,
 
-		// Power quality metrics
 		powerFactor: currentData.powerFactor,
 		efficiency: `${currentData.efficiency}%`,
 
-		// Sustainability metrics
 		carbonIntensity: `${currentData.carbonIntensity} kg CO2/kWh`,
 		renewablePercentage: `${currentData.renewablePercentage}%`,
 
-		// Grid performance
 		gridLoad: `${currentData.gridLoad}%`,
 		transmissionLoss: `${currentData.transmissionLoss}%`,
 		generationCapacity: `${currentData.generationCapacity} MW`,
@@ -199,7 +194,6 @@ app.get("/health", (req, res) => {
 	});
 });
 
-// Additional endpoint for detailed grid statistics
 app.get("/api/data/stats", (req, res) => {
 	res.json({
 		current: currentData,
@@ -229,7 +223,6 @@ app.get("/api/data/stats", (req, res) => {
 	});
 });
 
-// Endpoint to get specific alerts
 app.get("/api/data/alerts", (req, res) => {
 	res.json({
 		activeAlerts: currentData.alerts,

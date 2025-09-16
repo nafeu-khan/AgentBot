@@ -34,22 +34,19 @@ router.post("/refresh", authMiddleware.authenticate, (req, res) =>
 );
 
 // Memory management endpoints - require authentication and session ownership
-router.get(
-	"/memory/:sessionId/stats",
+router.get("/memory/:sessionId/stats",
 	authMiddleware.authenticate,
 	authMiddleware.verifySessionOwnership,
 	(req, res) => chatController.getMemoryStats(req, res)
 );
 
-router.delete(
-	"/memory/:sessionId",
+router.delete("/memory/:sessionId",
 	authMiddleware.authenticate,
 	authMiddleware.verifySessionOwnership,
 	(req, res) => chatController.clearMemory(req, res)
 );
 
-router.get(
-	"/memory/:sessionId/history",
+router.get("/memory/:sessionId/history",
 	authMiddleware.authenticate,
 	authMiddleware.verifySessionOwnership,
 	(req, res) => chatController.getConversationHistory(req, res)
@@ -135,8 +132,7 @@ router.post("/conversations", authMiddleware.authenticate, async (req, res) => {
 });
 
 
-router.get(
-	"/conversations/:conversationId",
+router.get("/conversations/:conversationId",
 	authMiddleware.authenticate,
 	authMiddleware.verifyConversationOwnership,
 	async (req, res) => {
@@ -145,17 +141,14 @@ router.get(
 			const { limit = 50, offset = 0 } = req.query;
 			const User = require("../models/User");
 
-			// Get conversation messages directly from database
 			const messages = await User.getConversationMessages(
 				conversationId,
 				parseInt(limit),
 				parseInt(offset)
 			);
 
-			// Load conversation history into hybrid memory manager for future use
 			const hybridMemoryManager = require("../services/hybridMemoryManager");
 			try {
-				// Load messages into memory manager if they're not already there
 				for (const message of messages) {
 					await hybridMemoryManager.addMessage(
 						conversationId,
@@ -206,8 +199,7 @@ router.get(
 );
 
 
-router.delete(
-	"/conversations/:conversationId",
+router.delete("/conversations/:conversationId",
 	authMiddleware.authenticate,
 	authMiddleware.verifyConversationOwnership,
 	async (req, res) => {
@@ -215,7 +207,6 @@ router.delete(
 			const { conversationId } = req.params;
 			const db = require("../database/connection");
 
-			// Soft delete conversation
 			await db.query(
 				"UPDATE chat_conversations SET is_active = false WHERE id = ?",
 				[conversationId]

@@ -72,7 +72,6 @@ class HybridMemoryManager {
 				);
 			}
 
-			// Trim STM if it exceeds limit
 			await this.trimSTM(sessionId);
 
 			return messageWithTimestamp;

@@ -7,7 +7,6 @@ const reactAgentService = require("../services/ReactAgentService");
 
 const router = express.Router();
 
-// System status with enhanced service monitoring
 router.get("/status", async (req, res) => {
 	try {
 		const systemHealth = {
@@ -37,7 +36,6 @@ router.get("/status", async (req, res) => {
 			timestamp: new Date().toISOString(),
 		};
 
-		// Determine overall health
 		const serviceStatuses = Object.values(systemHealth.services);
 		const allHealthy = serviceStatuses.every(
 			(service) => !service.status || service.status === "healthy"

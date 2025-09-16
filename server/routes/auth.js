@@ -53,7 +53,6 @@ router.get("/profile", authMiddleware.authenticate, authController.getProfile);
 router.put(
 	"/profile",
 	authMiddleware.authenticate,
-	// Add validation for profile update
 	authController.updateProfile
 );
 
@@ -90,7 +89,6 @@ router.get(
 	authMiddleware.authorize(["admin"]),
 	async (req, res) => {
 		try {
-			// This would be implemented in a separate admin controller
 			res.json({
 				success: true,
 				message: "Admin endpoint - not implemented yet",
@@ -135,7 +133,6 @@ router.post(
 	}
 );
 
-// Health check for auth system
 router.get("/health", async (req, res) => {
 	try {
 		const db = require("../database/connection");
@@ -166,7 +163,6 @@ router.get("/health", async (req, res) => {
 	}
 });
 
-// Development only endpoint to clear rate limits
 if (process.env.NODE_ENV === "development") {
 
 	router.post("/dev/clear-rate-limits", async (req, res) => {

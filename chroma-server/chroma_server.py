@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -48,14 +48,12 @@ class SearchToolUsageRequest(BaseModel):
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize ChromaDB collection on startup"""
     global chat_collection
     try:
-        # Try to get existing collection
         chat_collection = chroma_client.get_collection("chat_memory")
         print("ChromaDB collection 'chat_memory' found")
     except:
-        # Create new collection if it doesn't exist
+        # Create new collection if any existing doesn't exist
         chat_collection = chroma_client.create_collection(
             name="chat_memory",
             metadata={"description": "Chat conversation memory with embeddings"}
@@ -89,7 +87,6 @@ async def health_check():
 
 @app.post("/store-message")
 async def store_message(request: StoreMessageRequest):
-    """Store a chat message with embeddings"""
     try:
         if not chat_collection:
             raise HTTPException(status_code=500, detail="Collection not initialized")
@@ -122,7 +119,6 @@ async def store_message(request: StoreMessageRequest):
 
 @app.post("/search-messages")
 async def search_similar_messages(request: SearchMessagesRequest):
-    """Search for similar messages using vector similarity"""
     try:
         if not chat_collection:
             raise HTTPException(status_code=500, detail="Collection not initialized")
@@ -132,7 +128,7 @@ async def search_similar_messages(request: SearchMessagesRequest):
             n_results=request.limit,
             where={"session_id": request.session_id}
         )
-        
+        print("-"*10,"semantic similar Result ",results,"-"*10)
         formatted_results = []
         if results["documents"] and results["documents"][0]:
             for i, doc in enumerate(results["documents"][0]):
@@ -154,7 +150,6 @@ async def search_similar_messages(request: SearchMessagesRequest):
 
 @app.post("/store-tool-usage")
 async def store_tool_usage(request: StoreToolUsageRequest):
-    """Store tool usage for learning patterns"""
     try:
         if not chat_collection:
             raise HTTPException(status_code=500, detail="Collection not initialized")
@@ -174,7 +169,6 @@ async def store_tool_usage(request: StoreToolUsageRequest):
             "result_length": len(str(request.result))
         }
         
-        # Add to ChromaDB
         chat_collection.add(
             ids=[tool_id],
             documents=[tool_document],
@@ -192,7 +186,6 @@ async def store_tool_usage(request: StoreToolUsageRequest):
 
 @app.post("/search-tool-usage")
 async def search_similar_tool_usage(request: SearchToolUsageRequest):
-    """Search for similar tool usage patterns"""
     try:
         if not chat_collection:
             raise HTTPException(status_code=500, detail="Collection not initialized")
@@ -229,7 +222,6 @@ async def search_similar_tool_usage(request: SearchToolUsageRequest):
 
 @app.get("/stats")
 async def get_stats():
-    """Get collection statistics"""
     try:
         if not chat_collection:
             raise HTTPException(status_code=500, detail="Collection not initialized")
@@ -248,7 +240,6 @@ async def get_stats():
 
 @app.post("/reset")
 async def reset_collection():
-    """Reset the collection (use with caution)"""
     try:
         global chat_collection
         

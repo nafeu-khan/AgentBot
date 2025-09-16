@@ -51,7 +51,7 @@ class DatabaseConnection {
 
 	async initializeSchema() {
 		try {
-			// Create users table
+			//  users table
 			await this.query(`
                 CREATE TABLE IF NOT EXISTS users (
                     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -73,7 +73,7 @@ class DatabaseConnection {
                 )
             `);
 
-			// Create user sessions table
+			//  user sessions table
 			await this.query(`
                 CREATE TABLE IF NOT EXISTS user_sessions (
                     id VARCHAR(255) PRIMARY KEY,
@@ -93,7 +93,7 @@ class DatabaseConnection {
                 )
             `);
 
-			// Create chat conversations table
+			//  chat conversations table
 			await this.query(`
                 CREATE TABLE IF NOT EXISTS chat_conversations (
                     id VARCHAR(255) PRIMARY KEY,
@@ -111,7 +111,7 @@ class DatabaseConnection {
                 )
             `);
 
-			// Create chat messages table
+			//  chat messages table
 			await this.query(`
                 CREATE TABLE IF NOT EXISTS chat_messages (
                     id VARCHAR(255) PRIMARY KEY,
@@ -131,7 +131,7 @@ class DatabaseConnection {
                 )
             `);
 
-			// Create refresh tokens table
+			//  refresh tokens table
 			await this.query(`
                 CREATE TABLE IF NOT EXISTS refresh_tokens (
                     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -172,13 +172,11 @@ class DatabaseConnection {
 				if (param === null || param === undefined) {
 					return null;
 				}
-				// Convert to appropriate types
 				if (
 					typeof param === "string" &&
 					!isNaN(param) &&
 					!isNaN(parseFloat(param))
 				) {
-					// Keep as string if it looks like a string ID
 					return param;
 				}
 				return param;

@@ -88,6 +88,7 @@ class MemoryLangChainService {
                                                                                                 - ALWAYS use getGridData tool for grid status, power, voltage, demand, or energy metrics
                                                                                                 - NEVER call getWeather tool or asked for location for grid-related queries
                                                                                                 - Examples: "What's the current power demand?", "Get me the latest voltage readings."
+                                                                                                - Always prioritize using getGridData for any energy/grid-related questions and provide the latest data everytime.
 
                                                                                                 COMPANY INFO QUERIES:
                                                                                                 - ALWAYS use getCompanyInfo tool for company, services, products, or contact details
@@ -106,7 +107,7 @@ class MemoryLangChainService {
                                                                                 - Examples: "What's the current power demand?", "Get me the latest voltage readings." then just call getGridData
                                                                                 Remember: Users should only see natural responses, never tool calling mechanics.`);
 
-			// Convert history to LangChain messages and build message array
+			console.log("System message set.", systemMessage);
 			const langchainHistory = this.convertToLangChainMessages(history);
 			const messages = [
 				systemMessage,
@@ -118,7 +119,6 @@ class MemoryLangChainService {
 				content: userMessage,
 			});
 
-			// Initial call to determine if tools are required
 			const initialResponse = await this.llmWithTools.invoke(messages);
 
 			// Helper to stream text in chunks (emulates token streaming)
@@ -171,7 +171,7 @@ class MemoryLangChainService {
 						const output = await functionToCall(
 							tool.args || tool.arguments
 						);
-						console.log("Function output received for", tool.name);
+						console.log("Function output received for", tool.name, "And output is :", output);
 						await memory.addToolMessage(sessionId, {
 							tool_call_id: tool.name,
 							content: JSON.stringify(output),

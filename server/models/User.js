@@ -21,9 +21,7 @@ class UserModel {
 			role = "user",
 		} = userData;
 
-		// Hash password
-		const saltRounds =
-			parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12;
+		const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12;
 		const passwordHash = await bcrypt.hash(password, saltRounds);
 
 		const query = `
@@ -59,13 +57,11 @@ class UserModel {
 		}
 	}
 
-
 	async findById(id) {
 		const query = `SELECT * FROM ${this.tableName} WHERE id = ? AND is_active = true`;
 		const results = await db.query(query, [id]);
 		return results[0] || null;
 	}
-
 
 	async findByUsername(username) {
 		const query = `SELECT * FROM ${this.tableName} WHERE username = ? AND is_active = true`;
@@ -79,11 +75,9 @@ class UserModel {
 		return results[0] || null;
 	}
 
-
 	async verifyPassword(password, hashedPassword) {
 		return await bcrypt.compare(password, hashedPassword);
 	}
-
 
 	async updateLastLogin(userId) {
 		const query = `UPDATE ${this.tableName} SET last_login = NOW() WHERE id = ?`;
@@ -121,10 +115,8 @@ class UserModel {
 		return this.sanitizeUser(user);
 	}
 
-
 	async changePassword(userId, newPassword) {
-		const saltRounds =
-			parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12;
+		const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12;
 		const passwordHash = await bcrypt.hash(newPassword, saltRounds);
 
 		const query = `
@@ -404,7 +396,6 @@ class UserModel {
 		title = null
 	) {
 		if (conversationId) {
-			// Verify conversation exists and belongs to user
 			const conversation = await this.getConversationById(
 				conversationId,
 				userId

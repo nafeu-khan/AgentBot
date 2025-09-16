@@ -19,7 +19,6 @@ class JWTService {
 		return crypto.randomBytes(64).toString("hex");
 	}
 
-
 	generateAccessToken(payload, options = {}) {
 		const tokenPayload = {
 			type: "access",

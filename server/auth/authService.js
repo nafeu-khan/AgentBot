@@ -189,7 +189,6 @@ class AuthService {
 				decoded.sessionId
 			);
 
-			// Revoke session
 			await User.revokeSession(decoded.sessionId);
 
 			return {
@@ -197,7 +196,6 @@ class AuthService {
 				message: "Logout successful",
 			};
 		} catch (error) {
-			// Still logout even if token verification fails
 			return {
 				success: true,
 				message: "Logout successful",
@@ -207,10 +205,8 @@ class AuthService {
 
 	async logoutAll(userId) {
 		try {
-			// Revoke all user sessions
 			await User.revokeAllUserSessions(userId);
 
-			// Remove all refresh tokens for user
 			await this.removeAllUserRefreshTokens(userId);
 
 			return {
